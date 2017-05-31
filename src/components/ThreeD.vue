@@ -4,32 +4,38 @@
 
 <script>
 import * as TWEEN from 'tween.js'
-import socket from '../util/socket'
 import ThreeBase from '../three'
 
 export default {
+  props: { timelineItem: Object },
   data: () => ({ mountCount: 0 }),
   mounted () {
     this.mountCount += 1
-
-    this.threeBase = new ThreeBase(this.$refs.div)
-    this.threeBase.load().then(() => {
-      socket.on('orb', this.onOrb)
-
-      if (this.mountCount === 1) {
+    if (this.mountCount === 1) {
+      console.log('loading three bassee')
+      this.threeBase = new ThreeBase(this.$refs.div)
+      this.threeBase.load().then(() => {
+        console.log('is loaded')
+        this.threeBase.setTimelineItem(this.timelineItem)
         this.update()
-      }
+      })
+    } else {
+      console.log('activating!?!')
+      this.threeBase.activate()
+      this.threeBase.setTimelineItem(this.timelineItem)
+    }
+
+    this.$watch('timelineItem', item => {
+      console.log('new item!')
+      this.threeBase.setTimelineItem(item)
     })
+
+    console.log('mount count', this.mountCount)
   },
   beforeDestroy () {
-    socket.off('orb', this.onOrb)
-
-    this.threeBase.destruct()
+    this.threeBase.deactivate()
   },
   methods: {
-    onOrb (orb) {
-      console.log('3D orb!!!!!!!!!!')
-    },
     update (time) {
       requestAnimationFrame(this.update)
       if (!this.lastTime) this.lastTime = time
@@ -51,5 +57,6 @@ export default {
   top: 0; left: 0;
   width: 100%; height: 100%;
   overflow: none;
+  z-index: -1;
 }
 </style>

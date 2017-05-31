@@ -1,5 +1,5 @@
 
-export const cameraFOV = 120
+export const cameraFOV = 75
 export const cameraTextureFOV = 120
 export const dev = true
 export const useControls = false

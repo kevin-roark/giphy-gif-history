@@ -24,7 +24,7 @@ class TextureManager {
   }
 
   nameToPath (name) {
-    return require(`../assets/person-textures/${name}.jpg`)
+    return require(`../assets/${name}.jpg`)
   }
 
   loadNamedTexture (name, options) {

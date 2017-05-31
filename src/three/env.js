@@ -1,13 +1,12 @@
 import * as THREE from 'three'
 
-import Orb from './orb'
-
 export default class Env {
   constructor (options = {}) {
     let { size, load = true } = options
-    this.size = size || new THREE.Vector3(5000, 500, 5000)
+    this.size = size || new THREE.Vector3(250, 400, 500)
 
     this.group = new THREE.Group()
+    this.group.position.set(0, this.size.y / 2 - 2, 0)
     if (load) {
       this.load()
     }
@@ -16,16 +15,20 @@ export default class Env {
   load () {
     this.loadMaterials()
     this.loadWalls()
-    this.loadOrb()
     this.loadLights()
 
     this.loaded = true
   }
 
   loadMaterials () {
-    this.colorPalette = [0xff0000, 0x0000ff, 0xffffff]
-
     this.basicGreyMaterial = new THREE.MeshStandardMaterial({
+      roughness: 1,
+      metalness: 0,
+      color: 0x666666,
+      side: THREE.BackSide
+    })
+
+    this.floorMaterial = new THREE.MeshStandardMaterial({
       roughness: 1,
       metalness: 0,
       color: 0x666666,
@@ -34,7 +37,7 @@ export default class Env {
   }
 
   loadWalls () {
-    let { size, basicGreyMaterial } = this
+    let { size, basicGreyMaterial, floorMaterial } = this
 
     let far = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, size.y, 1), basicGreyMaterial)
     far.position.set(0, 0, size.z / 2)
@@ -46,22 +49,15 @@ export default class Env {
     right.position.set(size.x / 2, 0, 0)
     let top = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, 1, size.z), basicGreyMaterial)
     top.position.set(0, size.y / 2, 0)
-    let bottom = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, 1, size.z), basicGreyMaterial)
+    let bottom = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, 1, size.z), floorMaterial)
     bottom.position.set(0, size.y / -2, 0)
 
-    // this.walls = { far, left, right, top, bottom, back }
-    this.walls = { bottom }
+    this.walls = { far, left, right, top, bottom, back }
     for (let wall in this.walls) {
       this.walls[wall].name = `${wall}-wall`
       this.walls[wall].receiveShadow = true
       this.group.add(this.walls[wall])
     }
-  }
-
-  loadOrb () {
-    this.orb = new Orb()
-    this.orb.group.position.set(0, 100, 0)
-    this.group.add(this.orb.group)
   }
 
   loadLights () {
@@ -73,16 +69,19 @@ export default class Env {
       light.shadow.camera.far = 1000
     }
 
-    this.ambient = new THREE.AmbientLight(0x888888, 0.5)
+    this.ambient = new THREE.AmbientLight(0xaaaaaa, 0.5)
+    // this.ambient = new THREE.AmbientLight(0xffffff, 0.5)
     add(this.ambient)
 
-    let pointLight = this.pointLight = new THREE.PointLight(0xffffff, 1, 1000, 1.75)
-    pointLight.position.set(0, -80, 50)
+    let pointLight = this.pointLight = new THREE.PointLight(0xffffff, 1, 666, 1.25)
+    pointLight.name = 'pointlight'
+    pointLight.position.set(0, 150, 0)
     // setupShadow(pointLight)
-    // add(pointLight)
+    add(pointLight)
 
-    let spotLight = this.spotLight = new THREE.SpotLight(0xffffff, 2, 1000, Math.PI / 3)
-    spotLight.position.set(0, 400, 50)
+    let spotLight = this.spotLight = new THREE.SpotLight(0xffffff, 2, 1000, Math.PI / 15)
+    spotLight.name = 'spotlight'
+    spotLight.position.set(0, 80, 50)
     setupShadow(spotLight)
     add(spotLight)
     add(spotLight.target)
@@ -93,5 +92,9 @@ export default class Env {
     if (!this.loaded) {
       return
     }
+  }
+
+  setFloorColor (color) {
+    this.floorMaterial.color.set(color)
   }
 }

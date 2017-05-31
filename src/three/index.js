@@ -5,13 +5,11 @@ import * as Stats from 'stats.js'
 import { cameraFOV, useControls, dev } from './config'
 import Env from './env'
 import OrbitControls from './orbit-controls'
-import Person from './person'
 import textureManager from './texture-manager'
 
 export default class ThreeBase {
   constructor (container = document.body) {
     this.container = container
-    this.people = []
     this.loaded = false
 
     if (dev) {
@@ -29,35 +27,26 @@ export default class ThreeBase {
       this.setupThree()
     ])
     .then(() => {
-      this.addInitialPeople()
-
       this.loaded = true
       return this
     })
   }
 
   setupThree () {
-    let { container } = this
-
     const renderer = this.renderer = new THREE.WebGLRenderer({
       // antialias: true
     })
-    // renderer.autoClear = false
-    renderer.setClearColor(0xbbddff)
+    renderer.autoClear = false
+    renderer.setClearColor(0xffffff)
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
-    container.appendChild(renderer.domElement)
-
     let scene = this.scene = new THREE.Scene()
 
     let camera = this.camera = new THREE.PerspectiveCamera(cameraFOV, window.innerWidth / window.innerHeight, 1, 10000)
-    camera.position.set(0, 200, 300)
 
-    let env = this.env = new Env({ renderer, scene })
-    env.group.position.y = env.size.y / 2 - 50
-    scene.add(env.group)
+    this.loadScene()
 
     if (useControls) {
       let controls = this.controls = new OrbitControls(camera, renderer.domElement)
@@ -67,11 +56,12 @@ export default class ThreeBase {
       cameraParent.add(camera)
       scene.add(cameraParent)
 
+      camera.position.set(0, 100, 100)
+
       this.setupCameraMotion()
     }
 
-    this.onResize()
-    window.addEventListener('resize', this.onResize)
+    this.activate()
 
     window.THREE = THREE
     window.renderer = renderer
@@ -79,13 +69,53 @@ export default class ThreeBase {
     window.camera = camera
   }
 
-  destruct () {
+  loadScene () {
+    let { scene, renderer } = this
+
+    let env = this.env = new Env({ renderer, scene })
+    scene.add(env.group)
+
+    let pedestal = this.pedestal = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(26, 50, 26),
+      new THREE.MeshStandardMaterial()
+    )
+    pedestal.receiveShadow = pedestal.castShadow = true
+    pedestal.position.set(0, 25, -100)
+    scene.add(pedestal)
+
+    let gifCube = this.gifCube = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(10, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 0x888888 })
+    )
+    gifCube.castShadow = true
+    gifCube.position.set(0, 38, 7)
+    new TWEEN.Tween(gifCube.rotation).to({ y: Math.PI * 2 }, 15000).repeat(Infinity).start()
+    pedestal.add(gifCube)
+  }
+
+  activate () {
+    this.container.appendChild(this.renderer.domElement)
+
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
+  }
+
+  deactivate () {
     window.removeEventListener('resize', this.onResize)
 
     if (this.renderer) {
       const el = this.renderer.domElement
       el.parentNode.removeChild(el)
     }
+  }
+
+  setTimelineItem (item) {
+    const colors = [0xff0000, 0x0000ff, 0xffff00]
+    colors.sort(() => Math.random() - 0.5)
+
+    this.env.setFloorColor(colors[0])
+
+    this.pedestal.material.color.set(colors[1])
   }
 
   onResize () {
@@ -99,7 +129,7 @@ export default class ThreeBase {
   }
 
   update (time, delta) {
-    const { loaded, stats, renderer, scene, camera, controls, people, env } = this
+    const { loaded, stats, renderer, scene, camera, controls, env } = this
 
     if (dev) {
       stats.begin()
@@ -111,10 +141,6 @@ export default class ThreeBase {
 
     if (loaded) {
       env.update(time, delta)
-
-      for (let i = people.length - 1; i > -1; i--) {
-        people[i].update(time, delta)
-      }
     }
 
     if (dev) {
@@ -125,21 +151,6 @@ export default class ThreeBase {
   }
 
   setupCameraMotion () {
-    let { cameraParent } = this
-
-    this.cameraMotionTween = new TWEEN.Tween(cameraParent.rotation)
-      .to({ y: Math.PI * 2 }, 30000)
-      .repeat(Infinity)
-      .start()
-  }
-
-  addInitialPeople () {
-    for (let i = 0; i < 10; i++) {
-      let person = new Person(`person ${i}`)
-      person.group.position.set(0, -48, 0)
-      this.scene.add(person.group)
-      this.people.push(person)
-      person.load()
-    }
+    // TODO: nice zoom from end of room to beginning
   }
 }
