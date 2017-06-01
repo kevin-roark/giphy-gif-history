@@ -60,8 +60,6 @@ export default class ThreeBase {
 
       camera.position.set(0, 60, 20)
       camera.lookAt(new THREE.Vector3(0, 40, -100))
-
-      this.setupCameraMotion()
     }
 
     this.activate()
@@ -137,6 +135,8 @@ export default class ThreeBase {
         console.log('Error loading gif:', err)
       }
     })
+
+    this.setupCameraMotion()
   }
 
   setTexture (texture) {
@@ -178,6 +178,20 @@ export default class ThreeBase {
   }
 
   setupCameraMotion () {
-    // TODO: nice zoom from end of room to beginning
+    let { camera } = this
+    if (this.cameraTween) {
+      this.cameraTween.stop()
+    }
+
+    camera.position.set(0, 150, 200)
+
+    const cameraTarget = new THREE.Vector3(0, 40, -100)
+    this.cameraTween = new TWEEN.Tween(camera.position)
+      .to({ x: 0, y: 60, z: 20 }, 15000)
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .onUpdate(() => {
+        camera.lookAt(cameraTarget)
+      })
+      .start()
   }
 }

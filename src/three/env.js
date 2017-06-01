@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import * as TWEEN from 'tween.js'
 
 export default class Env {
   constructor (options = {}) {
@@ -86,6 +87,12 @@ export default class Env {
     add(spotLight)
     add(spotLight.target)
     spotLight.target.position.set(0, 0, 0)
+    new TWEEN.Tween(spotLight.position)
+      .to({ x: -10, z: -50, y: 40 }, 6000)
+      .easing(TWEEN.Easing.Bounce.InOut)
+      .yoyo(true)
+      .repeat(Infinity)
+      // .start()
   }
 
   update (time, delta) {
