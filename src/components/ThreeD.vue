@@ -12,25 +12,19 @@ export default {
   mounted () {
     this.mountCount += 1
     if (this.mountCount === 1) {
-      console.log('loading three bassee')
       this.threeBase = new ThreeBase(this.$refs.div)
       this.threeBase.load().then(() => {
-        console.log('is loaded')
         this.threeBase.setTimelineItem(this.timelineItem)
         this.update()
       })
     } else {
-      console.log('activating!?!')
       this.threeBase.activate()
       this.threeBase.setTimelineItem(this.timelineItem)
     }
 
     this.$watch('timelineItem', item => {
-      console.log('new item!')
       this.threeBase.setTimelineItem(item)
     })
-
-    console.log('mount count', this.mountCount)
   },
   beforeDestroy () {
     this.threeBase.deactivate()

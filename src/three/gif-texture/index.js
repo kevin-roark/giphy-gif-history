@@ -118,7 +118,7 @@ class GifTexture {
   }
 }
 
-module.exports = GifTexture
+export default GifTexture
 
 function nearestPow2 (aSize) {
   return Math.pow(2, Math.round(Math.log(aSize) / Math.log(2)))

@@ -4,7 +4,7 @@
 
     <div class="timeline-hud">
       <div class="timeline-year">{{ timelineItem.time }}</div>
-      <div class="timeline-text">{{ timelineItem.text }}</div>
+      <div class="timeline-text" v-html="timelineItem.text" />
     </div>
 
     <TimelineNav

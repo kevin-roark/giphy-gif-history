@@ -19,4 +19,13 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:hover, a:focus {
+  filter: invert(1);
+}
 </style>

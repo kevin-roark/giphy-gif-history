@@ -2,8 +2,10 @@ import * as THREE from 'three'
 import * as TWEEN from 'tween.js'
 import * as Stats from 'stats.js'
 
+import { choice } from '../util'
 import { cameraFOV, useControls, dev } from './config'
 import Env from './env'
+import GifTexture from './gif-texture'
 import OrbitControls from './orbit-controls'
 import textureManager from './texture-manager'
 
@@ -56,7 +58,8 @@ export default class ThreeBase {
       cameraParent.add(camera)
       scene.add(cameraParent)
 
-      camera.position.set(0, 100, 100)
+      camera.position.set(0, 60, 20)
+      camera.lookAt(new THREE.Vector3(0, 40, -100))
 
       this.setupCameraMotion()
     }
@@ -76,19 +79,21 @@ export default class ThreeBase {
     scene.add(env.group)
 
     let pedestal = this.pedestal = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(26, 50, 26),
+      new THREE.BoxBufferGeometry(34, 50, 50),
       new THREE.MeshStandardMaterial()
     )
+    pedestal.name = 'PEDESTAL'
     pedestal.receiveShadow = pedestal.castShadow = true
     pedestal.position.set(0, 25, -100)
     scene.add(pedestal)
 
     let gifCube = this.gifCube = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(10, 10, 10),
-      new THREE.MeshStandardMaterial({ color: 0x888888 })
+      new THREE.BoxBufferGeometry(25, 25, 25),
+      new THREE.MeshBasicMaterial({ color: 0x000000 })
     )
+    gifCube.name = 'GIF CUBE'
     gifCube.castShadow = true
-    gifCube.position.set(0, 38, 7)
+    gifCube.position.set(0, 45, 18)
     new TWEEN.Tween(gifCube.rotation).to({ y: Math.PI * 2 }, 15000).repeat(Infinity).start()
     pedestal.add(gifCube)
   }
@@ -116,6 +121,28 @@ export default class ThreeBase {
     this.env.setFloorColor(colors[0])
 
     this.pedestal.material.color.set(colors[1])
+
+    if (this.gifTexture) {
+      this.gifTexture.dispose()
+      this.setTexture(null)
+    }
+
+    const gif = choice(item.gifs)
+    this.gifTexture = new GifTexture({
+      gif: gif.url,
+      onLoad: texture => {
+        this.setTexture(texture)
+      },
+      onError: err => {
+        console.log('Error loading gif:', err)
+      }
+    })
+  }
+
+  setTexture (texture) {
+    this.gifCube.material.map = texture
+    this.gifCube.material.color.set(texture ? 0xffffff : 0x000000)
+    this.gifCube.material.needsUpdate = true
   }
 
   onResize () {
