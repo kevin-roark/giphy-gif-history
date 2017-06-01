@@ -115,7 +115,7 @@ export default class ThreeBase {
   setTimelineItem (item) {
     this.item = item
 
-    const colors = [0xff0000, 0x0000ff, 0xffff00]
+    const colors = [0xE646B6, 0x6157FF, 0x00E6CC, 0xFFC636, 0xFF6666, 0x9933FF, 0x00CCFF, 0xFFF35C]
     colors.sort(() => Math.random() - 0.5)
 
     this.env.setFloorColor(colors[0])
@@ -128,6 +128,13 @@ export default class ThreeBase {
     }
 
     const gif = choice(item.gifs)
+
+    const aspectRatio = gif.width / gif.height
+    const xScale = Math.min(1.5, Math.max(aspectRatio, 1))
+    const yScale = xScale / aspectRatio
+    this.gifCube.scale.set(xScale, yScale, 1)
+    this.gifCube.position.y = 40 + 10 * yScale
+
     this.gifTexture = new GifTexture({
       gif: require(`../assets/gifs/${gif.url}`),
       onLoad: texture => {

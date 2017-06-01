@@ -82,11 +82,11 @@ export default class Env {
 
     let spotLight = this.spotLight = new THREE.SpotLight(0xffffff, 2, 1000, Math.PI / 15)
     spotLight.name = 'spotlight'
-    spotLight.position.set(0, 80, 50)
+    spotLight.position.set(0, 80, 20)
     setupShadow(spotLight)
     add(spotLight)
     add(spotLight.target)
-    spotLight.target.position.set(0, 0, 0)
+    spotLight.target.position.set(0, 0, -10)
     new TWEEN.Tween(spotLight.position)
       .to({ x: -10, z: -50, y: 40 }, 6000)
       .easing(TWEEN.Easing.Bounce.InOut)

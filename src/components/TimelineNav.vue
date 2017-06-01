@@ -128,7 +128,7 @@ export default {
 
 .timeline-item.active {
   transform: scale(1, 1);
-  box-shadow: 0 2px 6px 0 rgba(255,0,0,0.80);
+  box-shadow: 0 2px 6px 0 #FF6666;
 }
 
 .timeline-item-year {
@@ -156,7 +156,7 @@ export default {
   left: 20px;
   width: 8px;
   background: #fff;
-  border: 1px solid #00f;
+  border: 1px solid #6157FF;
   z-index: -1;
 }
 
