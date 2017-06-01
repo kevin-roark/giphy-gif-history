@@ -21,19 +21,22 @@ import TimelineNav from './TimelineNav'
 import ThreeD from './ThreeD'
 
 export default {
+  props: { routeIndex: String },
   components: { TimelineNav, ThreeD },
   data: () => ({
-    timeline: timelineData,
-    timelineIndex: 0
+    timeline: timelineData
   }),
   computed: {
+    timelineIndex () {
+      return Number(this.routeIndex)
+    },
     timelineItem () {
       return this.timeline[this.timelineIndex]
     }
   },
   methods: {
     onTimelineIndexRequest (index) {
-      this.timelineIndex = index
+      this.$router.push(`/timeline/${index}`)
     }
   }
 }

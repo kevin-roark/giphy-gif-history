@@ -77,12 +77,12 @@ export default class ThreeBase {
     scene.add(env.group)
 
     let pedestal = this.pedestal = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(34, 50, 50),
+      new THREE.BoxBufferGeometry(50, 50, 50),
       new THREE.MeshStandardMaterial()
     )
     pedestal.name = 'PEDESTAL'
     pedestal.receiveShadow = pedestal.castShadow = true
-    pedestal.position.set(0, 25, -100)
+    pedestal.position.set(0, 25, -80)
     scene.add(pedestal)
 
     let gifCube = this.gifCube = new THREE.Mesh(
@@ -91,7 +91,7 @@ export default class ThreeBase {
     )
     gifCube.name = 'GIF CUBE'
     gifCube.castShadow = true
-    gifCube.position.set(0, 45, 18)
+    gifCube.position.set(0, 45, 10)
     new TWEEN.Tween(gifCube.rotation).to({ y: Math.PI * 2 }, 15000).repeat(Infinity).start()
     pedestal.add(gifCube)
   }
@@ -113,6 +113,8 @@ export default class ThreeBase {
   }
 
   setTimelineItem (item) {
+    this.item = item
+
     const colors = [0xff0000, 0x0000ff, 0xffff00]
     colors.sort(() => Math.random() - 0.5)
 
@@ -127,9 +129,11 @@ export default class ThreeBase {
 
     const gif = choice(item.gifs)
     this.gifTexture = new GifTexture({
-      gif: gif.url,
+      gif: require(`../assets/gifs/${gif.url}`),
       onLoad: texture => {
-        this.setTexture(texture)
+        if (item === this.item) {
+          this.setTexture(texture)
+        }
       },
       onError: err => {
         console.log('Error loading gif:', err)

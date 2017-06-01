@@ -3,8 +3,11 @@
   <div class="timeline">
     <div
       v-for="(item, index) in timeline"
-      :class="['timeline-item', { active: index === timelineIndex }]"
+      :class="timelineItemClass(item, index)"
+      :style="timelineItemStyle(item, index)"
       @click="() => onTimelineItemClick(index)"
+      @mouseenter="() => onTimelineItemMouseEnter(index)"
+      @mouseleave="() => onTimelineItemMouseLeave(index)"
     >
       <span class="timeline-item-year">{{ item.time }}</span>
     </div>
@@ -21,6 +24,7 @@ export default {
     timeline: Array,
     timelineIndex: Number
   },
+  data: () => ({ hoverIndex: null }),
   computed: {
     canGoLeft () {
       return this.timelineIndex !== 0
@@ -36,6 +40,16 @@ export default {
     window.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
+    timelineItemClass (item, index) {
+      return ['timeline-item', { active: index === this.timelineIndex }]
+    },
+    timelineItemStyle (item, index) {
+      const url = require(`../assets/gifs/${item.gifs[0].url}`)
+      if (index === this.timelineIndex || index === this.hoverIndex) {
+        return { backgroundImage: `url(${url})` }
+      }
+      return { backgroundColor: '#fff' }
+    },
     moveBack () {
       if (this.canGoLeft) {
         this.moveTo(this.timelineIndex - 1)
@@ -51,6 +65,12 @@ export default {
     },
     onTimelineItemClick (index) {
       this.moveTo(index)
+    },
+    onTimelineItemMouseEnter (index) {
+      this.hoverIndex = index
+    },
+    onTimelineItemMouseLeave (index) {
+      this.hoverIndex = null
     },
     onLeftClick () {
       this.moveBack()
@@ -92,8 +112,10 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 25px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
   margin: 8px 0;
-  background: #fff;
   cursor: pointer;
   transform: scale(0.5, 0.5);
   box-shadow: 0 2px 6px 0 rgba(0,0,0,0.80);
@@ -141,7 +163,7 @@ export default {
 button {
   position: absolute;
   top: 0;
-  background: #f00;
+  background: #fff;
   padding: 20px;
   cursor: pointer;
 }
