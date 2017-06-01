@@ -1,5 +1,15 @@
 <template>
 <div class="timeline-nav">
+  <div class="timeline">
+    <div
+      v-for="(item, index) in timeline"
+      :class="['timeline-item', { active: index === timelineIndex }]"
+      @click="() => onTimelineItemClick(index)"
+    >
+      <span class="timeline-item-year">{{ item.time }}</span>
+    </div>
+    <div class="timeline-line" />
+  </div>
   <button v-if="canGoLeft" class="left-button" @click="onLeftClick">Left</button>
   <button v-if="canGoRight" class="right-button" @click="onRightClick">Right</button>
 </div>
@@ -39,6 +49,9 @@ export default {
     moveTo (index) {
       this.$emit('timelineIndexRequest', index)
     },
+    onTimelineItemClick (index) {
+      this.moveTo(index)
+    },
     onLeftClick () {
       this.moveBack()
     },
@@ -66,6 +79,63 @@ export default {
   height: 60px;
   padding: 0 20px 40px 20px;
   box-sizing: border-box;
+}
+
+.timeline {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.timeline-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  margin: 8px 0;
+  background: #fff;
+  cursor: pointer;
+  transform: scale(0.5, 0.5);
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.80);
+  transition: all 0.2s;
+}
+
+.timeline-item:not(.active):hover {
+  transform: scale(0.8, 0.8);
+}
+
+.timeline-item.active {
+  transform: scale(1, 1);
+  box-shadow: 0 2px 6px 0 rgba(255,0,0,0.80);
+}
+
+.timeline-item-year {
+  position: absolute;
+  top: 25px;
+  left: -14px;
+  transform: translate(-100%, -50%);
+  white-space: nowrap;
+  color: #fff;
+  font-family: Menlo-Regular, monospace;
+  font-size: 24px;
+  opacity: 0.9;
+  transition: all 0.2s;
+}
+
+.timeline-item.active .timeline-item-year, .timeline-item:hover .timeline-item-year {
+  left: -7px;
+  opacity: 1;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 60px);
+  left: 20px;
+  width: 8px;
+  background: #fff;
+  border: 1px solid #00f;
+  z-index: -1;
 }
 
 button {

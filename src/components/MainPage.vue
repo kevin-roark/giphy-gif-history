@@ -49,7 +49,7 @@ export default {
 .timeline-year {
   font-family: Menlo-Regular, monospace;
   font-size: 66px;
-  color: #FFFFFF;
+  color: #fff;
   line-height: 66px;
   margin-bottom: 20px;
 }
