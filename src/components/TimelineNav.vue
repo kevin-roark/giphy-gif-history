@@ -19,15 +19,40 @@ export default {
       return this.timelineIndex !== this.timeline.length - 1
     }
   },
+  mounted () {
+    window.addEventListener('keydown', this.onKeyDown)
+  },
+  beforeDestroy () {
+    window.removeEventListener('keydown', this.onKeyDown)
+  },
   methods: {
-    onLeftClick () {
-      this.moveTo(this.timelineIndex - 1)
+    moveBack () {
+      if (this.canGoLeft) {
+        this.moveTo(this.timelineIndex - 1)
+      }
     },
-    onRightClick () {
-      this.moveTo(this.timelineIndex + 1)
+    moveForward () {
+      if (this.canGoRight) {
+        this.moveTo(this.timelineIndex + 1)
+      }
     },
     moveTo (index) {
       this.$emit('timelineIndexRequest', index)
+    },
+    onLeftClick () {
+      this.moveBack()
+    },
+    onRightClick () {
+      this.moveForward()
+    },
+    onKeyDown (ev) {
+      if (ev.keyCode === 37) {
+        ev.preventDefault()
+        this.moveBack()
+      } else if (ev.keyCode === 39) {
+        ev.preventDefault()
+        this.moveForward()
+      }
     }
   }
 }
