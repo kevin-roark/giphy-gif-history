@@ -33,6 +33,13 @@ export default class ThreeBase {
     ])
     .then(() => {
       this.loaded = true
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          this.updatePedestal(this.item, this.pedestalColor)
+        })
+      }
+
       return this
     })
   }
@@ -141,28 +148,7 @@ export default class ThreeBase {
 
     this.env.setFloorColor(colors[0])
 
-    let yearContext = this.yearCanvas.getContext('2d')
-    yearContext.fillStyle = colors[1]
-    yearContext.fillRect(0, 0, 2048, 2048)
-
-    if (item) {
-      yearContext.fillStyle = '#fff'
-      yearContext.font = `${TEXT_FONT_SIZE}px FuturaBT-Bold`
-      let texts = item.time.split('-')
-      texts = texts.map((t, i) => i === 0 && texts.length > 1 ? t + '-' : t)
-      let textSize = yearContext.measureText(texts[0])
-      let initY = texts.length > 1 ? TEXT_CANVAS_SIZE / 2 - 200 : TEXT_CANVAS_SIZE / 2 + 50
-      texts.forEach((text, i) => {
-        let x = TEXT_CANVAS_SIZE / 2 - textSize.width / 2
-        let y = initY + (i * 600)
-        yearContext.fillText(text, x, y)
-      })
-    }
-
-    this.yearCanvasTexture.needsUpdate = true
-    this.yearCanvasMaterial.needsUpdate = true
-
-    this.standardPedestalMaterial.color.set(colors[1])
+    this.updatePedestal(item, colors[1])
 
     if (this.gifTexture) {
       this.gifTexture.dispose()
@@ -195,6 +181,33 @@ export default class ThreeBase {
       this.camera.position.set(0, 150, 200)
       this.camera.lookAt(new THREE.Vector3(0, 40, -100))
     }
+  }
+
+  updatePedestal (item, color = '#6157FF') {
+    this.pedestalColor = color
+
+    let yearContext = this.yearCanvas.getContext('2d')
+    yearContext.fillStyle = color
+    yearContext.fillRect(0, 0, 2048, 2048)
+
+    if (item) {
+      yearContext.fillStyle = '#fff'
+      yearContext.font = `${TEXT_FONT_SIZE}px FuturaBT-Bold`
+      let texts = item.time.split('-')
+      texts = texts.map((t, i) => i === 0 && texts.length > 1 ? t + '-' : t)
+      let textSize = yearContext.measureText(texts[0])
+      let initY = texts.length > 1 ? TEXT_CANVAS_SIZE / 2 - 200 : TEXT_CANVAS_SIZE / 2 + 50
+      texts.forEach((text, i) => {
+        let x = TEXT_CANVAS_SIZE / 2 - textSize.width / 2
+        let y = initY + (i * 600)
+        yearContext.fillText(text, x, y)
+      })
+    }
+
+    this.yearCanvasTexture.needsUpdate = true
+    this.yearCanvasMaterial.needsUpdate = true
+
+    this.standardPedestalMaterial.color.set(color)
   }
 
   setTexture (texture) {

@@ -3,7 +3,7 @@
   <div class="about-link" @click="onAboutClick">About</div>
 
   <div class="timeline-hud">
-    <div class="timeline-year">{{ timelineItem.time }}</div>
+    <!-- <div class="timeline-year">{{ timelineItem.time }}</div> -->
     <div class="timeline-text" v-html="timelineItem.text" />
   </div>
 
