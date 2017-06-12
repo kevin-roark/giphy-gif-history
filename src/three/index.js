@@ -9,6 +9,9 @@ import GifTexture from './gif-texture'
 import OrbitControls from './orbit-controls'
 import textureManager from './texture-manager'
 
+const TEXT_CANVAS_SIZE = 2048
+const TEXT_FONT_SIZE = 600
+
 export default class ThreeBase {
   constructor (container = document.body) {
     this.container = container
@@ -76,9 +79,16 @@ export default class ThreeBase {
     let env = this.env = new Env({ renderer, scene })
     scene.add(env.group)
 
+    let yearCanvas = this.yearCanvas = document.createElement('canvas')
+    yearCanvas.width = yearCanvas.height = TEXT_CANVAS_SIZE
+
+    let yearCanvasTexture = this.yearCanvasTexture = new THREE.Texture(yearCanvas)
+
     let pedestal = this.pedestal = new THREE.Mesh(
       new THREE.BoxBufferGeometry(50, 50, 50),
-      new THREE.MeshStandardMaterial()
+      new THREE.MeshStandardMaterial({
+        map: yearCanvasTexture
+      })
     )
     pedestal.name = 'PEDESTAL'
     pedestal.receiveShadow = pedestal.castShadow = true
@@ -115,12 +125,22 @@ export default class ThreeBase {
   setTimelineItem (item) {
     this.item = item
 
-    const colors = [0xE646B6, 0x6157FF, 0x00E6CC, 0xFFC636, 0xFF6666, 0x9933FF, 0x00CCFF, 0xFFF35C]
+    const colors = ['#E646B6', '#6157FF', '#00E6CC', '#FFC636', '#FF6666', '#9933FF', '#00CCFF', '#FFF35C']
     colors.sort(() => Math.random() - 0.5)
 
     this.env.setFloorColor(colors[0])
 
-    this.pedestal.material.color.set(colors[1])
+    let yearContext = this.yearCanvas.getContext('2d')
+    yearContext.fillStyle = colors[1]
+    yearContext.fillRect(0, 0, 2048, 2048)
+
+    yearContext.fillStyle = '#fff'
+    yearContext.font = `${TEXT_FONT_SIZE}px FuturaBT-Bold`
+    let textSize = yearContext.measureText(item.time)
+    yearContext.fillText(item.time, TEXT_CANVAS_SIZE / 2 - textSize.width / 2, TEXT_CANVAS_SIZE / 2 - 100)
+
+    this.yearCanvasTexture.needsUpdate = true
+    this.pedestal.material.needsUpdate = true
 
     if (this.gifTexture) {
       this.gifTexture.dispose()
