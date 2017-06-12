@@ -193,6 +193,7 @@ export default {
     transform: translateX(-50%);
     top: 65px;
     left: 45%;
+    color: #000;
   }
 
   .timeline-item.active .timeline-item-year, .timeline-item:hover .timeline-item-year {

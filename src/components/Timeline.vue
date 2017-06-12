@@ -4,7 +4,11 @@
 
   <div class="timeline-hud">
     <!-- <div class="timeline-year">{{ timelineItem.time }}</div> -->
-    <div class="timeline-text" v-html="timelineItem.text" />
+    <div v-if="!isMobile || readingText" class="timeline-text" v-html="timelineItem.text" />
+  </div>
+
+  <div v-if="isMobile" class="read-button" @click="onReadClick">
+    {{ readingText ? 'Stop!' : 'Read!' }}
   </div>
 
   <TimelineNav
@@ -20,12 +24,31 @@ import TimelineNav from './TimelineNav'
 export default {
   components: { TimelineNav },
   props: ['timeline', 'timelineIndex', 'timelineItem'],
+  data: () => ({ windowWidth: 1000, readingText: false }),
+  computed: {
+    isMobile () {
+      return this.windowWidth <= 800
+    }
+  },
+  mounted () {
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
+  },
   methods: {
+    onResize () {
+      this.windowWidth = window.innerWidth
+    },
     onTimelineIndexRequest (index) {
       this.$router.push(`/timeline/${index}`)
     },
     onAboutClick () {
       this.$emit('enterSplash')
+    },
+    onReadClick () {
+      this.readingText = !this.readingText
     }
   }
 }
@@ -43,7 +66,7 @@ export default {
 }
 
 .timeline-hud {
-  margin-top: 150px;
+  margin-top: 50px;
   color: #fff;
   user-select: none;
 }
@@ -59,7 +82,36 @@ export default {
 .timeline-text {
   font-family: 'FuturaBT-Book', WorkSans-Regular, Helvetica, Arial, sans-serif;
   font-size: 28px;
+  background: rgba(0, 0, 0, 0.05);
   text-shadow: 0 2px 4px rgba(0,0,0,0.50);
-  max-width: 800px;
+  max-width: 33%;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+  .timeline-hud {
+    margin-top: 50px;
+  }
+
+  .timeline-text {
+    background: rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    max-height: calc(100vh - 180px);
+  }
+
+  .read-button {
+    box-sizing: border-box;
+    cursor: pointer;
+    background: #000;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 8px;
+    font-family: 'FuturaBT-Book', WorkSans-Regular, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+  }
 }
 </style>
