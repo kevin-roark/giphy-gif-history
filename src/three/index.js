@@ -33,6 +33,7 @@ export default class ThreeBase {
     ])
     .then(() => {
       this.loaded = true
+      this.setTexture(null)
 
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => {
@@ -121,7 +122,7 @@ export default class ThreeBase {
     gifCube.name = 'GIF CUBE'
     gifCube.castShadow = true
     gifCube.position.set(0, 39, 20)
-    new TWEEN.Tween(gifCube.rotation).to({ y: Math.PI * 2 }, 15000).repeat(Infinity).start()
+    // new TWEEN.Tween(gifCube.rotation).to({ y: Math.PI * 2 }, 15000).repeat(Infinity).start()
     pedestal.add(gifCube)
   }
 
@@ -143,6 +144,7 @@ export default class ThreeBase {
 
   setTimelineItem (item) {
     this.item = item
+    this.gif = choice(item.gifs)
 
     const colors = ['#E646B6', '#6157FF', '#00E6CC', '#FFC636', '#FF6666', '#9933FF', '#00CCFF', '#FFF35C']
     colors.sort(() => Math.random() - 0.5)
@@ -157,13 +159,11 @@ export default class ThreeBase {
     }
 
     if (item) {
-      const gif = choice(item.gifs)
+      const gif = this.gif
 
-      const aspectRatio = gif.width / gif.height
-      const xScale = Math.min(1.5, Math.max(aspectRatio, 1))
-      const yScale = xScale / aspectRatio
-      this.gifCube.scale.set(xScale, yScale, 1)
-      this.gifCube.position.y = 39 + 10 * yScale
+      const scale = this.getScale(gif)
+      this.gifCube.scale.set(scale.x, scale.y, scale.z)
+      this.gifCube.position.y = 39 + 10 * scale.y
 
       this.gifTexture = new GifTexture({
         gif: require(`../assets/gifs/${gif.url}`),
@@ -211,10 +211,43 @@ export default class ThreeBase {
     this.standardPedestalMaterial.color.set(color)
   }
 
+  getScale (gif = this.gif) {
+    if (!gif) {
+      gif = { width: 1, height: 1 }
+    }
+
+    const aspectRatio = gif.width / gif.height
+    const x = Math.min(1.5, Math.max(aspectRatio, 1))
+    const y = x / aspectRatio
+
+    return { x, y, z: 1 }
+  }
+
   setTexture (texture) {
-    this.gifCube.material.map = texture
-    this.gifCube.material.color.set(0xffffff)
+    this.hasTexture = !!texture
+
+    if (texture) {
+      this.gifCube.material.map = texture
+    }
+
+    this.gifCube.material.color.set(texture ? 0xffffff : 0xcccccc)
     this.gifCube.material.needsUpdate = true
+
+    if (this.textureLoadingTween) {
+      this.textureLoadingTween.stop()
+    }
+
+    let scale = this.getScale(this.gif)
+    if (!texture) {
+      scale.x *= 0.1
+      scale.y *= 0.1
+      scale.z *= 0.1
+    }
+
+    this.textureLoadingTween = new TWEEN.Tween(this.gifCube.scale)
+      .to(scale, 600)
+      .easing(texture ? TWEEN.Easing.Quadratic.Out : TWEEN.Easing.Quadratic.In)
+      .start()
   }
 
   onResize () {
@@ -228,7 +261,7 @@ export default class ThreeBase {
   }
 
   update (time, delta) {
-    const { loaded, stats, renderer, scene, camera, controls, env } = this
+    const { loaded, stats, renderer, scene, camera, controls, env, gifCube, hasTexture } = this
 
     if (dev) {
       stats.begin()
@@ -238,8 +271,10 @@ export default class ThreeBase {
       controls.update()
     }
 
-    if (loaded) {
+    if (loaded && delta) {
       env.update(time, delta)
+
+      gifCube.rotation.y += (hasTexture ? 0.0002 : 0.005) * delta
     }
 
     if (dev) {
@@ -255,15 +290,21 @@ export default class ThreeBase {
       this.cameraTween.stop()
     }
 
-    camera.position.set(0, 150, 200)
-
     const cameraTarget = new THREE.Vector3(0, 40, -100)
-    this.cameraTween = new TWEEN.Tween(camera.position)
-      .to({ x: 0, y: 60, z: 20 }, 15000)
-      .easing(TWEEN.Easing.Sinusoidal.Out)
-      .onUpdate(() => {
-        camera.lookAt(cameraTarget)
-      })
-      .start()
+    const tweenTo = (x, y, z, duration) => {
+      this.cameraTween = new TWEEN.Tween(camera.position)
+        .to({ x, y, z }, duration)
+        .easing(TWEEN.Easing.Sinusoidal.Out)
+        .onUpdate(() => {
+          camera.lookAt(cameraTarget)
+        })
+        .start()
+
+      return this.cameraTween
+    }
+
+    tweenTo(0, 150, 200, 1000).onComplete(() => {
+      tweenTo(0, 60, 20, 15000)
+    })
   }
 }

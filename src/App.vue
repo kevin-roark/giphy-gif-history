@@ -26,10 +26,6 @@ a {
   transition: filter 0.2s;
 }
 
-a:hover, a:focus {
-  filter: invert(1);
-}
-
 ::selection {
   background: #FFF35C;
 }
