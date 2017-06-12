@@ -82,7 +82,7 @@ export default class Env {
 
     let pointLight2 = this.pointLight2 = new THREE.PointLight(0xffffff, 1, 1000, 1.25)
     pointLight2.name = 'pointlight'
-    pointLight2.position.set(0, -195, 10)
+    pointLight2.position.set(0, -170, -45)
     // setupShadow(pointLight2)
     add(pointLight2)
     // pointLight2.add(new THREE.Mesh(

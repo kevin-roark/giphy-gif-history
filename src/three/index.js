@@ -9,8 +9,8 @@ import GifTexture from './gif-texture'
 import OrbitControls from './orbit-controls'
 import textureManager from './texture-manager'
 
-const TEXT_CANVAS_SIZE = 2048
-const TEXT_FONT_SIZE = 600
+const TEXT_CANVAS_SIZE = { w: 1024, h: 2048 }
+const TEXT_FONT_SIZE = 320
 
 export default class ThreeBase {
   constructor (container = document.body) {
@@ -87,7 +87,8 @@ export default class ThreeBase {
     scene.add(env.group)
 
     let yearCanvas = this.yearCanvas = document.createElement('canvas')
-    yearCanvas.width = yearCanvas.height = TEXT_CANVAS_SIZE
+    yearCanvas.width = TEXT_CANVAS_SIZE.w
+    yearCanvas.height = TEXT_CANVAS_SIZE.h
     let yearCanvasTexture = this.yearCanvasTexture = new THREE.Texture(yearCanvas)
     let yearCanvasMaterial = this.yearCanvasMaterial = new THREE.MeshStandardMaterial({
       map: yearCanvasTexture,
@@ -98,7 +99,7 @@ export default class ThreeBase {
     let standardPedestalMaterial = this.standardPedestalMaterial = new THREE.MeshStandardMaterial()
 
     let pedestal = this.pedestal = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(50, 50, 50),
+      new THREE.BoxBufferGeometry(20, 40, 20),
       [
         standardPedestalMaterial,
         standardPedestalMaterial,
@@ -119,7 +120,7 @@ export default class ThreeBase {
     )
     gifCube.name = 'GIF CUBE'
     gifCube.castShadow = true
-    gifCube.position.set(0, 45, 10)
+    gifCube.position.set(0, 39, 20)
     new TWEEN.Tween(gifCube.rotation).to({ y: Math.PI * 2 }, 15000).repeat(Infinity).start()
     pedestal.add(gifCube)
   }
@@ -162,7 +163,7 @@ export default class ThreeBase {
       const xScale = Math.min(1.5, Math.max(aspectRatio, 1))
       const yScale = xScale / aspectRatio
       this.gifCube.scale.set(xScale, yScale, 1)
-      this.gifCube.position.y = 40 + 10 * yScale
+      this.gifCube.position.y = 39 + 10 * yScale
 
       this.gifTexture = new GifTexture({
         gif: require(`../assets/gifs/${gif.url}`),
@@ -196,10 +197,10 @@ export default class ThreeBase {
       let texts = item.time.split('-')
       texts = texts.map((t, i) => i === 0 && texts.length > 1 ? t + '-' : t)
       let textSize = yearContext.measureText(texts[0])
-      let initY = texts.length > 1 ? TEXT_CANVAS_SIZE / 2 - 200 : TEXT_CANVAS_SIZE / 2 + 50
+      let initY = texts.length > 1 ? TEXT_CANVAS_SIZE.h / 2 - 250 : TEXT_CANVAS_SIZE.h / 2 - 90
       texts.forEach((text, i) => {
-        let x = TEXT_CANVAS_SIZE / 2 - textSize.width / 2
-        let y = initY + (i * 600)
+        let x = TEXT_CANVAS_SIZE.w / 2 - textSize.width / 2
+        let y = initY + (i * 400)
         yearContext.fillText(text, x, y)
       })
     }

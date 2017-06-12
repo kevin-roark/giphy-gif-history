@@ -89,7 +89,7 @@ export default [
       Yahoo, who acquired Geocities ten years earlier, announces it will shut down Geocities service in the US. There
       were at least 38 million user-built pages on GeoCities before it was shut down.`,
     gifs: [
-      { url: '10.gif', width: 38, height: 38 }
+      { url: '10.gif', width: 40, height: 40 }
     ]
   },
   {
