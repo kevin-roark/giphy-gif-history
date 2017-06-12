@@ -27,7 +27,7 @@ a {
 }
 
 ::selection {
-  background: #FFF35C;
+  background: #ff0;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -35,5 +35,10 @@ a {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0
+}
+
+.question {
+  font-family: 'FuturaBT-Bold', Menlo, WorkSans-Regular, Helvetica, Arial, sans-serif;
+  margin-bottom: 10px;
 }
 </style>
