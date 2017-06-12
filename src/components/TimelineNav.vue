@@ -2,19 +2,17 @@
 <div class="timeline-nav">
   <div class="timeline">
     <div
-      v-for="(item, index) in timeline"
-      :class="timelineItemClass(item, index)"
-      :style="timelineItemStyle(item, index)"
-      @click="() => onTimelineItemClick(index)"
-      @mouseenter="() => onTimelineItemMouseEnter(index)"
-      @mouseleave="() => onTimelineItemMouseLeave(index)"
+      v-for="item in computedTimeline"
+      :class="timelineItemClass(item)"
+      :style="timelineItemStyle(item)"
+      @click="() => onTimelineItemClick(item)"
+      @mouseenter="() => onTimelineItemMouseEnter(item)"
+      @mouseleave="() => onTimelineItemMouseLeave(item)"
     >
       <span class="timeline-item-year">{{ item.time }}</span>
     </div>
     <div class="timeline-line" />
   </div>
-  <button v-if="canGoLeft" class="left-button" @click="onLeftClick">Left</button>
-  <button v-if="canGoRight" class="right-button" @click="onRightClick">Right</button>
 </div>
 </template>
 
@@ -24,28 +22,46 @@ export default {
     timeline: Array,
     timelineIndex: Number
   },
-  data: () => ({ hoverIndex: null }),
+  data: () => ({ hoverItem: null, windowWidth: window.innerWidth }),
   computed: {
     canGoLeft () {
       return this.timelineIndex !== 0
     },
     canGoRight () {
       return this.timelineIndex !== this.timeline.length - 1
+    },
+    isMobile () {
+      return this.windowWidth <= 800
+    },
+    computedTimeline () {
+      if (!this.isMobile) {
+        return this.timeline
+      }
+
+      // limit to 3 timeline items on mobile
+      let startIndex = Math.min(this.timeline.length - 3, Math.max(0, this.timelineIndex - 1))
+      return this.timeline.slice(startIndex, startIndex + 3)
     }
   },
   mounted () {
+    this.onResize()
+
     window.addEventListener('keydown', this.onKeyDown)
+    window.addEventListener('resize', this.onResize)
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.onKeyDown)
+    window.removeEventListener('resize', this.onResize)
   },
   methods: {
-    timelineItemClass (item, index) {
+    timelineItemClass (item) {
+      const index = this.timeline.indexOf(item)
       return ['timeline-item', { active: index === this.timelineIndex }]
     },
-    timelineItemStyle (item, index) {
+    timelineItemStyle (item) {
+      const index = this.timeline.indexOf(item)
       const url = require(`../assets/gifs/${item.gifs[0].url}`)
-      if (index === this.timelineIndex || index === this.hoverIndex) {
+      if (index === this.timelineIndex || item === this.hoverItem) {
         return { backgroundImage: `url(${url})` }
       }
       return { backgroundColor: '#fff' }
@@ -63,20 +79,15 @@ export default {
     moveTo (index) {
       this.$emit('timelineIndexRequest', index)
     },
-    onTimelineItemClick (index) {
+    onTimelineItemClick (item) {
+      const index = this.timeline.indexOf(item)
       this.moveTo(index)
     },
-    onTimelineItemMouseEnter (index) {
-      this.hoverIndex = index
+    onTimelineItemMouseEnter (item) {
+      this.hoverItem = item
     },
-    onTimelineItemMouseLeave (index) {
-      this.hoverIndex = null
-    },
-    onLeftClick () {
-      this.moveBack()
-    },
-    onRightClick () {
-      this.moveForward()
+    onTimelineItemMouseLeave (item) {
+      this.hoverItem = null
     },
     onKeyDown (ev) {
       if (ev.keyCode === 37) {
@@ -86,6 +97,9 @@ export default {
         ev.preventDefault()
         this.moveForward()
       }
+    },
+    onResize () {
+      this.windowWidth = window.innerWidth
     }
   }
 }
@@ -160,19 +174,40 @@ export default {
   z-index: -1;
 }
 
-button {
-  position: absolute;
-  top: 0;
-  background: #fff;
-  padding: 20px;
-  cursor: pointer;
-}
+@media only screen and (max-width: 800px) {
+  .timeline {
+    right: auto;
+    top: auto;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
-.left-button {
-  left: 5px;
-}
+  .timeline-item {
+    margin: 0 40px;
+  }
 
-.right-button {
-  right: 5px;
+  .timeline-item-year {
+    transform: translateX(-50%);
+    top: 65px;
+    left: 45%;
+  }
+
+  .timeline-item.active .timeline-item-year, .timeline-item:hover .timeline-item-year {
+    left: 45%;
+    top: 58px;
+    opacity: 1;
+  }
+
+  .timeline-line {
+    width: 250px;
+    height: 8px;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid rgba(97, 87, 255, 0.7);
+  }
 }
 </style>
