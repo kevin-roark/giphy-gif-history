@@ -22,11 +22,26 @@ export default class Env {
   }
 
   loadMaterials () {
+    this.wallMaterialCanvas = document.createElement('canvas')
+    this.wallMaterialCanvas.width = this.wallMaterialCanvas.height = 2048
+
+    let ctx = this.wallMaterialCanvas.getContext('2d')
+    let grd = this.wallGradient = ctx.createLinearGradient(0, 0, 0, 2048)
+    grd.addColorStop(0, '#E646B6')
+    grd.addColorStop(0.5, '#93F')
+    grd.addColorStop(1, '#6157FF')
+    ctx.fillStyle = grd
+    ctx.fillRect(0, 0, 2048, 2048)
+
+    this.wallMaterialTexture = new THREE.Texture(this.wallMaterialCanvas)
+    this.wallMaterialTexture.needsUpdate = true
+
     this.basicGreyMaterial = new THREE.MeshStandardMaterial({
       roughness: 1,
       metalness: 0,
-      color: 0x666666,
-      side: THREE.BackSide
+      color: 0xcccccc,
+      side: THREE.BackSide,
+      map: this.wallMaterialTexture
     })
 
     this.floorMaterial = new THREE.MeshStandardMaterial({
@@ -41,13 +56,13 @@ export default class Env {
     let { size, basicGreyMaterial, floorMaterial } = this
 
     let far = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, size.y, 1), basicGreyMaterial)
-    far.position.set(0, 0, size.z / 2)
+    far.position.set(0, -1, size.z / 2)
     let back = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, size.y, 1), basicGreyMaterial)
-    back.position.set(0, 0, size.z / -2)
+    back.position.set(0, -1, size.z / -2 + 1)
     let left = new THREE.Mesh(new THREE.BoxBufferGeometry(1, size.y, size.z), basicGreyMaterial)
-    left.position.set(-size.x / 2, 0, 0)
+    left.position.set(-size.x / 2 + 1, -1, 0)
     let right = new THREE.Mesh(new THREE.BoxBufferGeometry(1, size.y, size.z), basicGreyMaterial)
-    right.position.set(size.x / 2, 0, 0)
+    right.position.set(size.x / 2 - 1, -1, 0)
     let top = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, 1, size.z), basicGreyMaterial)
     top.position.set(0, size.y / 2, 0)
     let bottom = new THREE.Mesh(new THREE.BoxBufferGeometry(size.x, 1, size.z), floorMaterial)

@@ -304,7 +304,7 @@ export default class ThreeBase {
     }
 
     tweenTo(0, 150, 200, 1000).onComplete(() => {
-      tweenTo(0, 60, 20, 15000)
+      tweenTo(0, 60, 25, 15000)
     })
   }
 }
