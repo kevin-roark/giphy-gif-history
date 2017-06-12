@@ -50,7 +50,7 @@ export default {
 }
 
 .timeline-year {
-  font-family: Menlo-Regular, monospace;
+  font-family: 'FuturaBT-Bold', Menlo, WorkSans-Regular, Helvetica, Arial, sans-serif;
   font-size: 66px;
   color: #fff;
   line-height: 66px;
@@ -58,7 +58,7 @@ export default {
 }
 
 .timeline-text {
-  font-family: WorkSans-Regular, Helvetica, sans-serif;
+  font-family: 'FuturaBT-Book', WorkSans-Regular, Helvetica, Arial, sans-serif;
   font-size: 28px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.50);
   max-width: 800px;

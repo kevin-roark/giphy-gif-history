@@ -1,0 +1,33 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 3400472, 2017-06-01T16:43:31-0400
+ *
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are
+ * explicitly restricted from using the Licensed Webfonts(s).
+ *
+ * You may obtain a valid license at the URLs below.
+ *
+ * Webfont: FuturaBT-Bold by Bitstream
+ * URL: https://www.myfonts.com/fonts/bitstream/futura/bold/
+ *
+ * Webfont: FuturaBT-Book by Bitstream
+ * URL: https://www.myfonts.com/fonts/bitstream/futura/book/
+ *
+ *
+ * License: https://www.myfonts.com/viewlicense?type=web&buildid=3400472
+ * Licensed pageviews: 20,000
+ * Webfonts copyright: Copyright &#x00A9; 2015 Monotype Imaging Inc. All rights reserved.
+ *
+ * © 2017 MyFonts Inc
+*/
+
+
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/33e318");
+
+
+@font-face {font-family: 'FuturaBT-Bold';src: url('../webfonts/33E318_0_0.eot');src: url('../webfonts/33E318_0_0.eot?#iefix') format('embedded-opentype'),url('../webfonts/33E318_0_0.woff2') format('woff2'),url('../webfonts/33E318_0_0.woff') format('woff'),url('../webfonts/33E318_0_0.ttf') format('truetype');}
+
+
+@font-face {font-family: 'FuturaBT-Book';src: url('../webfonts/33E318_1_0.eot');src: url('../webfonts/33E318_1_0.eot?#iefix') format('embedded-opentype'),url('../webfonts/33E318_1_0.woff2') format('woff2'),url('../webfonts/33E318_1_0.woff') format('woff'),url('../webfonts/33E318_1_0.ttf') format('truetype');}
