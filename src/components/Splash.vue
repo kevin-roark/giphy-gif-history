@@ -1,6 +1,6 @@
 <template>
   <div class="splash" :style="splashStyle">
-    <h1 class="title">History of the GIF</h1>
+    <h1 class="title" :style="titleStyle">History of the GIF</h1>
 
     <div class="enter-container">
       <div>
@@ -36,9 +36,13 @@ import * as THREE from 'three'
 
 export default {
   data: () => ({
-    rainbowColor: { r: 0, g: 0, b: 0 }
+    rainbowColor: { r: 0, g: 0, b: 0 },
+    windowWidth: 1000
   }),
   mounted () {
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
+
     let color = new THREE.Color()
     let hue = 0
     this.rainbowInterval = setInterval(() => {
@@ -52,14 +56,24 @@ export default {
     }, 20)
   },
   beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
+
     clearInterval(this.rainbowInterval)
   },
   computed: {
     splashStyle () {
       let c = this.rainbowColor
-      let color = `rgb(${c.r}, ${c.g}, ${c.b})`
       let bgColor = `rgba(${c.r}, ${c.g}, ${c.b}, 0.25)`
-      return { background: bgColor, border: `2px solid ${color}` }
+      return { background: bgColor }
+    },
+    titleStyle () {
+      if (this.windowWidth <= 800) {
+        return null
+      }
+
+      let c = this.rainbowColor
+      let color = `rgb(${c.r}, ${c.g}, ${c.b})`
+      return { borderBottom: `5px solid ${color}` }
     }
     // enterStyle () {
     //   let c = this.rainbowColor
@@ -68,6 +82,9 @@ export default {
     // }
   },
   methods: {
+    onResize () {
+      this.windowWidth = window.innerWidth
+    },
     onEnterClick () {
       this.$emit('exitSplash')
     }
@@ -80,7 +97,7 @@ export default {
   position: fixed;
   top: 50px; left: 50%;
   transform: translateX(-50%);
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   padding: 20px 20px 20px 40px;
   border-radius: 4px;
@@ -94,6 +111,7 @@ export default {
   font-size: 84px;
   font-weight: normal;
   white-space: pre;
+  color: #fff;
 }
 
 .enter-container {
@@ -163,7 +181,6 @@ img.computer-lab {
   cursor: pointer;
 }
   .timeline-link:hover {
-    border: 2px solid #fff;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   }
 
