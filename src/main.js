@@ -10,6 +10,7 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   routes: [
     { path: '/', redirect: '/timeline/0' },
+    { path: '/timeline', redirect: '/timeline/0' },
     { path: '/timeline/:routeIndex', component: MainPage, props: true }
   ]
 })

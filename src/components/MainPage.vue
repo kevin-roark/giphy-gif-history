@@ -2,65 +2,58 @@
   <div id="main-screen">
     <ThreeD :timelineItem="timelineItem" />
 
-    <div class="timeline-hud">
-      <div class="timeline-year">{{ timelineItem.time }}</div>
-      <div class="timeline-text" v-html="timelineItem.text" />
-    </div>
+    <transition name="fade">
+      <keep-alive>
+        <Timeline
+          v-if="!showingAbout"
+          :timeline="timeline"
+          :timelineIndex="timelineIndex"
+          :timelineItem="timelineItem"
+          @enterSplash="onEnterSplash"
+        />
+      </keep-alive>
+    </transition>
 
-    <TimelineNav
-      :timeline="timeline"
-      :timelineIndex="timelineIndex"
-      @timelineIndexRequest="onTimelineIndexRequest"
-    />
+    <transition name="fade">
+      <keep-alive>
+        <Splash v-if="showingAbout" @exitSplash="onExitSplash" />
+      </keep-alive>
+    </transition>
   </div>
 </template>
 
 <script>
 import timelineData from '../timeline'
-import TimelineNav from './TimelineNav'
+import Splash from './Splash'
+import Timeline from './Timeline'
 import ThreeD from './ThreeD'
 
 export default {
   props: { routeIndex: String },
-  components: { TimelineNav, ThreeD },
+  components: { Timeline, ThreeD, Splash },
   data: () => ({
-    timeline: timelineData
+    timeline: timelineData,
+    showingAbout: true
   }),
   computed: {
     timelineIndex () {
       return Number(this.routeIndex)
     },
     timelineItem () {
-      return this.timeline[this.timelineIndex]
+      return this.timeline[this.timelineIndex || 0]
     }
   },
   methods: {
-    onTimelineIndexRequest (index) {
-      this.$router.push(`/timeline/${index}`)
+    onEnterSplash () {
+      this.showingAbout = true
+    },
+    onExitSplash () {
+      this.showingAbout = false
     }
   }
 }
 </script>
 
 <style scoped>
-.timeline-hud {
-  margin-top: 150px;
-  color: #fff;
-  user-select: none;
-}
 
-.timeline-year {
-  font-family: 'FuturaBT-Bold', Menlo, WorkSans-Regular, Helvetica, Arial, sans-serif;
-  font-size: 66px;
-  color: #fff;
-  line-height: 66px;
-  margin-bottom: 20px;
-}
-
-.timeline-text {
-  font-family: 'FuturaBT-Book', WorkSans-Regular, Helvetica, Arial, sans-serif;
-  font-size: 28px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.50);
-  max-width: 800px;
-}
 </style>

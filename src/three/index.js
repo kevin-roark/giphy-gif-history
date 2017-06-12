@@ -81,14 +81,25 @@ export default class ThreeBase {
 
     let yearCanvas = this.yearCanvas = document.createElement('canvas')
     yearCanvas.width = yearCanvas.height = TEXT_CANVAS_SIZE
-
     let yearCanvasTexture = this.yearCanvasTexture = new THREE.Texture(yearCanvas)
+    let yearCanvasMaterial = this.yearCanvasMaterial = new THREE.MeshStandardMaterial({
+      map: yearCanvasTexture,
+      roughness: 1,
+      metalness: 0.4
+    })
+
+    let standardPedestalMaterial = this.standardPedestalMaterial = new THREE.MeshStandardMaterial()
 
     let pedestal = this.pedestal = new THREE.Mesh(
       new THREE.BoxBufferGeometry(50, 50, 50),
-      new THREE.MeshStandardMaterial({
-        map: yearCanvasTexture
-      })
+      [
+        standardPedestalMaterial,
+        standardPedestalMaterial,
+        standardPedestalMaterial,
+        standardPedestalMaterial,
+        yearCanvasMaterial,
+        standardPedestalMaterial
+      ]
     )
     pedestal.name = 'PEDESTAL'
     pedestal.receiveShadow = pedestal.castShadow = true
@@ -97,7 +108,7 @@ export default class ThreeBase {
 
     let gifCube = this.gifCube = new THREE.Mesh(
       new THREE.BoxBufferGeometry(25, 25, 25),
-      new THREE.MeshBasicMaterial({ color: 0x000000 })
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
     )
     gifCube.name = 'GIF CUBE'
     gifCube.castShadow = true
@@ -134,45 +145,61 @@ export default class ThreeBase {
     yearContext.fillStyle = colors[1]
     yearContext.fillRect(0, 0, 2048, 2048)
 
-    yearContext.fillStyle = '#fff'
-    yearContext.font = `${TEXT_FONT_SIZE}px FuturaBT-Bold`
-    let textSize = yearContext.measureText(item.time)
-    yearContext.fillText(item.time, TEXT_CANVAS_SIZE / 2 - textSize.width / 2, TEXT_CANVAS_SIZE / 2 - 100)
+    if (item) {
+      yearContext.fillStyle = '#fff'
+      yearContext.font = `${TEXT_FONT_SIZE}px FuturaBT-Bold`
+      let texts = item.time.split('-')
+      texts = texts.map((t, i) => i === 0 && texts.length > 1 ? t + '-' : t)
+      let textSize = yearContext.measureText(texts[0])
+      let initY = texts.length > 1 ? TEXT_CANVAS_SIZE / 2 - 200 : TEXT_CANVAS_SIZE / 2 + 50
+      texts.forEach((text, i) => {
+        let x = TEXT_CANVAS_SIZE / 2 - textSize.width / 2
+        let y = initY + (i * 600)
+        yearContext.fillText(text, x, y)
+      })
+    }
 
     this.yearCanvasTexture.needsUpdate = true
-    this.pedestal.material.needsUpdate = true
+    this.yearCanvasMaterial.needsUpdate = true
+
+    this.standardPedestalMaterial.color.set(colors[1])
 
     if (this.gifTexture) {
       this.gifTexture.dispose()
       this.setTexture(null)
     }
 
-    const gif = choice(item.gifs)
+    if (item) {
+      const gif = choice(item.gifs)
 
-    const aspectRatio = gif.width / gif.height
-    const xScale = Math.min(1.5, Math.max(aspectRatio, 1))
-    const yScale = xScale / aspectRatio
-    this.gifCube.scale.set(xScale, yScale, 1)
-    this.gifCube.position.y = 40 + 10 * yScale
+      const aspectRatio = gif.width / gif.height
+      const xScale = Math.min(1.5, Math.max(aspectRatio, 1))
+      const yScale = xScale / aspectRatio
+      this.gifCube.scale.set(xScale, yScale, 1)
+      this.gifCube.position.y = 40 + 10 * yScale
 
-    this.gifTexture = new GifTexture({
-      gif: require(`../assets/gifs/${gif.url}`),
-      onLoad: texture => {
-        if (item === this.item) {
-          this.setTexture(texture)
+      this.gifTexture = new GifTexture({
+        gif: require(`../assets/gifs/${gif.url}`),
+        onLoad: texture => {
+          if (item === this.item) {
+            this.setTexture(texture)
+          }
+        },
+        onError: err => {
+          console.log('Error loading gif:', err)
         }
-      },
-      onError: err => {
-        console.log('Error loading gif:', err)
-      }
-    })
+      })
 
-    this.setupCameraMotion()
+      this.setupCameraMotion()
+    } else {
+      this.camera.position.set(0, 150, 200)
+      this.camera.lookAt(new THREE.Vector3(0, 40, -100))
+    }
   }
 
   setTexture (texture) {
     this.gifCube.material.map = texture
-    this.gifCube.material.color.set(texture ? 0xffffff : 0x000000)
+    this.gifCube.material.color.set(0xffffff)
     this.gifCube.material.needsUpdate = true
   }
 

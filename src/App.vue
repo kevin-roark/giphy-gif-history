@@ -15,7 +15,7 @@ export default {
 
 <style>
 #app {
-  font-family: WorkSans-Regular, Helvetica, Arial, sans-serif;
+  font-family: 'FuturaBT-Book', WorkSans-Regular, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -23,9 +23,21 @@ export default {
 a {
   color: inherit;
   text-decoration: underline;
+  transition: filter 0.2s;
 }
 
 a:hover, a:focus {
   filter: invert(1);
+}
+
+::selection {
+  background: #FFF35C;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s linear;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 </style>

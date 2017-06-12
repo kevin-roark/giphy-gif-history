@@ -80,6 +80,16 @@ export default class Env {
     // setupShadow(pointLight)
     add(pointLight)
 
+    let pointLight2 = this.pointLight2 = new THREE.PointLight(0xffffff, 1, 1000, 1.25)
+    pointLight2.name = 'pointlight'
+    pointLight2.position.set(0, -195, 10)
+    // setupShadow(pointLight2)
+    add(pointLight2)
+    // pointLight2.add(new THREE.Mesh(
+    //   new THREE.SphereBufferGeometry(5),
+    //   new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    // ))
+
     let spotLight = this.spotLight = new THREE.SpotLight(0xffffff, 2, 1000, Math.PI / 15)
     spotLight.name = 'spotlight'
     spotLight.position.set(0, 80, 20)
