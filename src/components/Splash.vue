@@ -80,6 +80,8 @@ export default {
   position: fixed;
   top: 50px; left: 50%;
   transform: translateX(-50%);
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
   padding: 20px 20px 20px 40px;
   border-radius: 4px;
   box-shadow: 0 2px 6px 0 rgba(0,0,0,0.80);
@@ -134,10 +136,6 @@ img.computer-lab {
   height: 220px;
 }
 
-.credits {
-
-}
-
 .credits-list {
   text-align: right;
   list-style: none;
@@ -168,4 +166,41 @@ img.computer-lab {
     border: 2px solid #fff;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   }
+
+@media only screen and (max-width: 800px) {
+  .splash {
+    top: 10px;
+    left: 10px;
+    width: calc(100vw - 50px);
+    max-height: calc(100vh - 20px);
+    transform: none;
+    padding: 15px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 48px;
+    white-space: normal;
+  }
+
+  .enter-container {
+    margin-top: 20px;
+  }
+
+  .logo img {
+    height: 100px;
+  }
+
+  .giphy-arts {
+    transform: translate(-7px, -4px);
+  }
+
+  img.computer-lab {
+    height: 90px;
+  }
+
+  .timeline-link {
+    padding: 20px 60px;
+  }
+}
 </style>
