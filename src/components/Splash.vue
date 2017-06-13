@@ -20,7 +20,9 @@
 
     <div class="credits">
       <ul class="credits-list">
-        <li>Text by: Celine</li>
+        <li style="margin-bottom: 8px;">
+          Contributions by: Celine Katzman, Michael Worthy
+        </li>
         <li>
           Website by:
           <a href="http://www.kevinroark.com" target="_blank">Kevin Roark</a>
@@ -155,6 +157,8 @@ img.computer-lab {
 }
 
 .credits-list {
+  float: right;
+  max-width: 70%;
   text-align: right;
   list-style: none;
   margin: 60px 0 0 0;
