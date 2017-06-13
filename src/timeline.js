@@ -231,7 +231,7 @@ export default [
   },
   {
     time: '2011',
-    text: `The term “cinemagraph” is invented by Jamie Beck and Kevin Burg to describe stereographic photography gifs. Cinemagraphs become a popular way for photography as a field to expand to the moving image.`,
+    text: `The term “cinemagraph” is coined by Jamie Beck and Kevin Burg to describe stereographic photography gifs. Cinemagraphs become a popular way for photography as a field to expand to the moving image.`,
     gifs: [
       { url: '11.gif', width: 500, height: 273 }
     ]
