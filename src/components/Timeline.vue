@@ -2,7 +2,7 @@
 <div class="timeline-container">
   <div class="about-link" @click="onAboutClick">About</div>
 
-  <div v-if="!isMobile || readingText" class="timeline-hud">
+  <div v-if="!isMobile || readingText" ref="timelineHudEl" class="timeline-hud">
     <div v-if="timelineItem.title" class="timeline-title" v-html="timelineItem.title" />
     <div v-else class="timeline-year">{{ timelineItem.time }}</div>
     <div class="timeline-text" v-html="processedText" />
@@ -39,6 +39,11 @@ export default {
   mounted () {
     this.onResize()
     window.addEventListener('resize', this.onResize)
+
+    // scroll to top every time the item changes
+    this.$watch('timelineItem', () => {
+      this.$refs.timelineHudEl.scrollTop = 0
+    })
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.onResize)
