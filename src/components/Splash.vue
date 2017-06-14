@@ -6,7 +6,7 @@
       <div>
         <h2 class="presented-by">Presented By</h2>
         <div class="logos">
-          <a class="logo" href="https://giphy.com/giphyarts" target="_blank">
+          <a class="logo" href="https://giphy.art" target="_blank">
             <img class="giphy-arts" src="static/img/giphy-arts-logo.png" alt="Giphy Arts" />
           </a>
           <a class="logo" href="https://computerlab.io" target="_blank">
