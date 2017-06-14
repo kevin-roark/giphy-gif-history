@@ -174,6 +174,34 @@ export default {
   z-index: -1;
 }
 
+@media only screen and (min-width: 801px) and (max-height: 950px) {
+  .timeline {
+    right: 15px;
+  }
+
+  .timeline-item {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin: 6px 0;
+  }
+
+  .timeline-item-year {
+    top: 15px;
+    font-size: 22px;
+  }
+
+  .timeline-line {
+    top: 15px;
+    left: 10px;
+    height: calc(100% - 35px);
+  }
+
+  .timeline-item:not(.active):hover {
+    transform: scale(1, 1);
+  }
+}
+
 @media only screen and (max-width: 800px) {
   .timeline {
     right: auto;
