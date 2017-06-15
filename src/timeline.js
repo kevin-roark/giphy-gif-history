@@ -3,7 +3,7 @@ export default [
     time: '1987',
     text: `
       Steve Wilhite, an engineer at Compuserve, invents the Graphics Interchange Format (GIF), a compression algorithm
-      meant to make it easier to download images over internet connections. GIF is introduced as one of the first two
+      that expedites the process of downloading images over internet connections. GIF is introduced as one of the first two
       image formats available to creators of web sites.`,
     gifs: [
       { url: '1.gif', width: 500, height: 500 }
@@ -30,9 +30,7 @@ export default [
   {
     time: '1994',
     text: `
-      Geocities launches, giving people an easy way to create a personal website. Many decorate their web presences with GIFs available from
-      central libraries. As many built websites for the first time, the portal became the third most visited website in the world in
-      1999. <a href="https://www.gifcities.org">Search GIFS from GeoCitites here</a>.`,
+      Geocities launches, providing an easy platform to create personal websites and customize them with GIFs available from central libraries. As many people built personal websites for the first time, the portal became the third most visited website in the world in 1999. <a href="https://www.gifcities.org">Search GIFS from GeoCitites here</a>.`,
     gifs: [
       { url: '4.gif', width: 88, height: 31 }
     ]
@@ -133,9 +131,7 @@ export default [
   {
     time: '1999',
     text: `
-      Unysis (owner of Compuserve) attempts to enforce a patent license on the compression algorithm for the GIF.
-      This causes a revolt among GIF lovers worldwide, who threaten to switch to PNGs. Although Unysis eventually backs down
-      from patent enforcement (and the patents eventually expire), GIFs begin to go out of fashion for web page use, in favor of JPEGs and
+        A controversy regarding the patent license on the compression algorithm for the GIF between Unisys (the software patent holder) and CompuServe (the company that first introduced the format) incites a revolt among GIF lovers worldwide, who threaten to switch to PNGs. Although Unisys abandons patent enforcement and the patents eventually expire, GIFs begin to go out of fashion for web page use, in favor of JPEGs and
       PNGs, which offer different methods of compression that are more desirable at the time.`,
     gifs: [
       { url: '7.gif', width: 400, height: 235 }
@@ -172,7 +168,7 @@ export default [
   },
   {
     time: '2006',
-    text: `Rhizome Editor and Curator at Large, Marisa Olson, curates The Gif Show at RX Gallery in San Francisco.`,
+    text: `Rhizome Editor and Curator at Large, Marisa Olson, curates The Gif Show at RX Gallery in San Francisco. [Ed. note: Marisa is speaking Saturday, 6/17, at Time_Frame. <a href="http://timeframe.splashthat.com>Click for more</a>.]`,
     gifs: [
       { url: '8.gif', width: 96, height: 143 }
     ]
@@ -231,14 +227,14 @@ export default [
   },
   {
     time: '2011',
-    text: `The term “cinemagraph” is coined by Jamie Beck and Kevin Burg to describe stereographic photography gifs. Cinemagraphs become a popular way for photography as a field to expand to the moving image.`,
+    text: `The term “cinemagraph” is coined by Jamie Beck and Kevin Burg to describe stereographic photography gifs. Cinemagraphs are a way in GIFs have enabled the field of photography to intersect with the moving image.`,
     gifs: [
       { url: '11.gif', width: 500, height: 273 }
     ]
   },
   {
     time: '2013',
-    text: `GIPHY, the world's largest search engine for GIFs, is founded by Alex Chung. Along with making GIFs easier to find in general, GIPHY enables GIFs to be used on social media sites by enabling integrations of its open API. Using GIFs as a communication tool explodes in usage, a trend that continues to grow throughout the present day. `,
+    text: `GIPHY, the world's largest search engine for GIFs, is founded by Alex Chung. Along with making GIFs easier to find in general, GIPHY allows GIFs to be used on social media sites by enabling integrations of its open API. Using GIFs as a communication tool explodes in usage, a trend that continues to grow to the present day. `,
     gifs: [
       { url: '12.gif', width: 1344, height: 840 }
     ]
