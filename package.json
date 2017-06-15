@@ -4,6 +4,7 @@
   "description": "History of the GIF",
   "author": "Kevin Roark Jr / Computer Lab",
   "private": true,
+  "now": { "alias": ["www.historyofthegif.com", "historyofthegif.com"] },
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
